@@ -113,7 +113,8 @@ rsim.fit.obj <- function(SIM,RES,verbose=TRUE){
   # Formula for weighted average q: 
   # q = exp(sum(w * log(obs/est))/sum(w)) where w is wt/sd  
   logdiff       <- log(obs/est)
-  wt_sd_inverse <- wt/sd
+  sdlog         <- sqrt(log(1.0+sd*sd/(obs*obs))) # sigma^2 of lognormal dist 
+  wt_sd_inverse <- wt/sdlog# sd
   wt_logdiffsum <- tapply(logdiff*wt_sd_inverse, as.character(SIM$fitting$Biomass$Group),sum)
   wt_sum        <- tapply(wt_sd_inverse,         as.character(SIM$fitting$Biomass$Group),sum)
   q_est         <- exp(wt_logdiffsum/wt_sum) # need ifelse here for 0 weights?
@@ -130,8 +131,7 @@ rsim.fit.obj <- function(SIM,RES,verbose=TRUE){
    #            (est_mean/obs_mean)[as.character(SIM$fitting$Biomass$Group)])
   #obs_scaled <-obs*survey_q 
   #sdlog  <- sqrt(log(1.0+sd*sd*survey_q*survey_q/(obs_scaled*obs_scaled)))
-  sdlog  <- sqrt(log(1.0+sd*sd/(obs*obs)))
-  sdiff  <- log(survey_q*obs/est)/sdlog
+  sdiff  <- log((obs/survey_q)/est)/sdlog
   fit    <- wt * (FLOGTWOPI + log(sdlog) + 0.5*sdiff*sdiff)
 
   if (verbose){
