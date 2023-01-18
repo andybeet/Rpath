@@ -135,6 +135,7 @@ rsim.fit.obj <- function(SIM,RES,verbose=TRUE){
   fit    <- wt * (FLOGTWOPI + log(sdlog) + 0.5*sdiff*sdiff)
 
   if (verbose){
+    obs_scaled  <- obs/survey_q
     OBJ$Biomass <- cbind(SIM$fitting$Biomass,est,survey_q,obs_scaled,sdiff,fit)
   } else {
     OBJ$tot <- OBJ$tot + sum(fit)
