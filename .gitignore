@@ -4,7 +4,6 @@
 *.png
 *.jpg
 *.tif
-data
 outputs
 code
 *.xlsx
@@ -14,5 +13,5 @@ Rpath.Rcheck*
 src/*.o
 src/*.dll
 NAMESPACE
-
 docs
+Rpath.Rproj
