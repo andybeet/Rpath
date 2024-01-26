@@ -1,18 +1,10 @@
 name: tests
 
 on:
-  pull_request:
-    paths:
-    - '.github/workflows/tests.yml'
-    - 'R/*'
-    - 'tests/testthat/*'
   push:
-    paths:
-    - '.github/workflows/tests.yml'
-    - 'R/*'
-    - 'tests/testthat/*'
-    - 'README.md'
-    - 'DESCRIPTION'
+    branches: [main, master,andy]
+  pull_request:
+    branches: [main, master,andy]
 
 jobs:
   # build:
