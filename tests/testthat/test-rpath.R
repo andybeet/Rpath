@@ -9,7 +9,7 @@ library(rlist)
 
 # ---- Modify this toggle to TRUE to generate the baseline files. ----
 # ---- Reset it back to FALSE to run the tests. ----------------------
-# CREATE_BASELINE_FILES <- TRUE
+#CREATE_BASELINE_FILES <- TRUE
 CREATE_BASELINE_FILES <- FALSE
 
 NUMBER_OF_STEPS <- 5 # should be an odd multiple of nrows=600 (i.e., 5,15,30)
@@ -884,32 +884,32 @@ testthat::test_that("Rpath Unit Tests", {
   # # 
   # # Save current Rpath run data
   REco <- rpath(REco.params, eco.name = 'R Ecosystem') # an Rpath object
-  # RpathObjTopLevel <- if (CREATE_BASELINE_FILES) BaselineRpathObjTopLevel else CurrentRpathObjTopLevel
-  # saveRDS(REco,file=RpathObjTopLevel)
-  # # sink(RpathObjTopLevel)
-  # #   print(REco)
-  # # sink()
-  # 
-  # # Save current Rpath run summary data
-  # setwd(originalWorkingDir)
-  # RpathObjSummary <- if (CREATE_BASELINE_FILES) BaselineRpathObjSummary else CurrentRpathObjSummary
-  # # saveRDS(summary(REco),file=RpathObjSummary)
-  # sink(RpathObjSummary)
-  #   cat(summary(REco))
+  RpathObjTopLevel <- if (CREATE_BASELINE_FILES) BaselineRpathObjTopLevel else CurrentRpathObjTopLevel
+  saveRDS(REco,file=RpathObjTopLevel)
+  # sink(RpathObjTopLevel)
+  #   print(REco)
   # sink()
+
+  # Save current Rpath run summary data
+  setwd(originalWorkingDir)
+  RpathObjSummary <- if (CREATE_BASELINE_FILES) BaselineRpathObjSummary else CurrentRpathObjSummary
+  # saveRDS(summary(REco),file=RpathObjSummary)
+  sink(RpathObjSummary)
+    cat(summary(REco))
+  sink()
 
   # Save current Rpath sim run data for AB and RK4
   setwd(originalWorkingDir)
   REcosystem_scene <- rsim.scenario(REco, REco.params, 1:50)
-  # REcosystem_Current_AB_from_Sim  <- rsim.run(REcosystem_scene,method='AB', years=1:50)
-  # REcosystem_Current_RK4_from_Sim <- rsim.run(REcosystem_scene,method='RK4',years=1:50) # RSKRSK RK4
-  # if (CREATE_BASELINE_FILES) {
-  #   write.Rsim(REcosystem_Current_AB_from_Sim, BaselineAB)
-  #   write.Rsim(REcosystem_Current_RK4_from_Sim,BaselineRK4)  
-  # } else {
-  #   write.Rsim(REcosystem_Current_AB_from_Sim, CurrentAB)
-  #   write.Rsim(REcosystem_Current_RK4_from_Sim,CurrentRK4)
-  # }
+  REcosystem_Current_AB_from_Sim  <- rsim.run(REcosystem_scene,method='AB', years=1:50)
+  REcosystem_Current_RK4_from_Sim <- rsim.run(REcosystem_scene,method='RK4',years=1:50) # RSKRSK RK4
+  if (CREATE_BASELINE_FILES) {
+    write.Rsim(REcosystem_Current_AB_from_Sim, BaselineAB)
+    write.Rsim(REcosystem_Current_RK4_from_Sim,BaselineRK4)
+  } else {
+    write.Rsim(REcosystem_Current_AB_from_Sim, CurrentAB)
+    write.Rsim(REcosystem_Current_RK4_from_Sim,CurrentRK4)
+  }
   
   # ------------------------------------------
   # ------------------------------------------
@@ -918,69 +918,69 @@ testthat::test_that("Rpath Unit Tests", {
   # ------------------------------------------
   
   print("------------------ Rpath Object Tests ------------------")
-  # if (! CREATE_BASELINE_FILES) {
-  #   # Remove existing output data files
-  #   cwd <- getwd()
-  #   files <- dir(path=file.path(cwd,OUTPUT_DATA_DIR),pattern='diff_*')
-  #   file.remove(file.path(OUTPUT_DATA_DIR,files))
-  #   files <- dir(path=file.path(cwd,OUTPUT_DATA_DIR),pattern='zero_*')
-  #   file.remove(file.path(OUTPUT_DATA_DIR,files))
-  #   
-  #   # Test 1 - Test if Balanced (i.e., "Status: Balanced" is the 2nd line of the Summary file)
-  #   headerSummaryLines <- readLines(CurrentRpathObjSummary,n=2)
-  #   parts <- unlist(strsplit(str_trim(headerSummaryLines[2]),split=" "))
-  #   runTestEqual(inc(runNum),"","Is model balanced?",parts[2],"Balanced")
-  # 
-  #   # Test 2 - Test if function runs silently (i.e., no messages, warnings, or print statements)
-  #   runTestSilent(inc(runNum),"Does model run without any terminal output (i.e., warnings, errors)?",REco.params,'R Ecosystem')
-  #   
-  #   # Test 3 - Test that the REcosystem object is the same as the saved original REcosystem object
-  #   REcosystemCurrent <- readRDS(CurrentRpathObjTopLevel)#,fill = TRUE, sep = " ")
-  #   runTestEqual(inc(runNum),"","Is the baseline Rpath object equivalent to the current Rpath object (toplevel data)?",REcosystemBaseline,REcosystemCurrent)
-  # 
-  #   # Test 4 - Test that the REcosystem Summary is the same as the saved original REcosystem Summary
-  #   REcosystemSummaryCurrent <- read.table(CurrentRpathObjSummary,fill = TRUE)
-  #   runTestEqual(inc(runNum),"","Is the baseline Rpath run Summary the same as the current Rpath Summary?",REcosystemBaselineSummary,REcosystemSummaryCurrent)
-  # 
-  #   # Tests 5-16 - Test that REcosystem AB object is same as RK4 object with no perturbations
-  #   REcosystem_Current_AB  <- read.csv(CurrentAB)
-  #   REcosystem_Current_RK4 <- read.csv(CurrentRK4)
-  # }
-  # 
-  # if (CREATE_BASELINE_FILES) { 
-  #   saveRDS(REcosystem_Current_AB_from_Sim$out_Biomass,    file=BaselineABOutBiomass)
-  #   saveRDS(REcosystem_Current_RK4_from_Sim$out_Biomass,   file=BaselineRK4OutBiomass)
-  #   saveRDS(REcosystem_Current_AB_from_Sim$out_Catch,      file=BaselineABOutCatch)
-  #   saveRDS(REcosystem_Current_RK4_from_Sim$out_Catch,     file=BaselineRK4OutCatch)
-  #   saveRDS(REcosystem_Current_AB_from_Sim$out_Gear_Catch, file=BaselineABOutGearCatch)
-  #   saveRDS(REcosystem_Current_RK4_from_Sim$out_Gear_Catch,file=BaselineRK4OutGearCatch)  
-  # } 
-  # else {
-  #   saveRDS(REcosystem_Current_AB_from_Sim$out_Biomass,    file=CurrentABOutBiomass)
-  #   saveRDS(REcosystem_Current_RK4_from_Sim$out_Biomass,   file=CurrentRK4OutBiomass)
-  #   saveRDS(REcosystem_Current_AB_from_Sim$out_Catch,      file=CurrentABOutCatch)
-  #   saveRDS(REcosystem_Current_RK4_from_Sim$out_Catch,     file=CurrentRK4OutCatch)
-  #   saveRDS(REcosystem_Current_AB_from_Sim$out_Gear_Catch, file=CurrentABOutGearCatch)
-  #   saveRDS(REcosystem_Current_RK4_from_Sim$out_Gear_Catch,file=CurrentRK4OutGearCatch)
-  #   REcosystem_Current_AB_OutBiomass    <- readRDS(CurrentABOutBiomass) #,   fill=TRUE,sep=" ")
-  #   REcosystem_Current_RK4_OutBiomass   <- readRDS(CurrentRK4OutBiomass) #,  fill=TRUE,sep=" ")
-  #   REcosystem_Current_AB_OutCatch      <- readRDS(CurrentABOutCatch) #,     fill=TRUE,sep=" ")
-  #   REcosystem_Current_RK4_OutCatch     <- readRDS(CurrentRK4OutCatch) #,    fill=TRUE,sep=" ")
-  #   REcosystem_Current_AB_OutGearCatch  <- readRDS(CurrentABOutGearCatch) #, fill=TRUE,sep=" ")
-  #   REcosystem_Current_RK4_OutGearCatch <- readRDS(CurrentRK4OutGearCatch) #,fill=TRUE,sep=" ")
-  #   runTestEqual(inc(runNum),"",              "Compare baseline AB to Current AB",                    REcosystem_Baseline_AB,              REcosystem_Current_AB)
-  #   runTestEqual(inc(runNum),"out_Biomass",   "Compare baseline AB to Current AB for OutBiomass",     REcosystem_Baseline_AB_OutBiomass,   REcosystem_Current_AB_OutBiomass)
-  #   runTestEqual(inc(runNum),"out_Catch",     "Compare baseline AB to Current AB for OutCatch",       REcosystem_Baseline_AB_OutCatch,     REcosystem_Current_AB_OutCatch)
-  #   runTestEqual(inc(runNum),"out_Gear_Catch","Compare baseline AB to Current AB for OutGearCatch",   REcosystem_Baseline_AB_OutGearCatch, REcosystem_Current_AB_OutGearCatch)
-  #   runTestEqual(inc(runNum),"",              "Compare baseline RK4 to Current RK4",                  REcosystem_Baseline_RK4,             REcosystem_Current_RK4)
-  #   runTestEqual(inc(runNum),"out_Biomass",   "Compare baseline RK4 to Current RK4 for OutputBiomass",REcosystem_Baseline_RK4_OutBiomass,  REcosystem_Current_RK4_OutBiomass)
-  #   runTestEqual(inc(runNum),"out_Catch",     "Compare baseline RK4 to Current RK4 for OutCatch",     REcosystem_Baseline_RK4_OutCatch,    REcosystem_Current_RK4_OutCatch)
-  #   runTestEqual(inc(runNum),"out_Gear_Catch","Compare baseline RK4 to Current RK4 for OutGearCatch", REcosystem_Baseline_RK4_OutGearCatch,REcosystem_Current_RK4_OutGearCatch)
-  #   runTestEqual(inc(runNum),"",              "Compare baseline AB to Current RK4",                   REcosystem_Baseline_AB,              REcosystem_Current_RK4)
-  #   runTestEqual(inc(runNum),"out_Biomass",   "Compare baseline AB to Current RK4 for OutBiomass",    REcosystem_Baseline_AB_OutBiomass,   REcosystem_Current_RK4_OutBiomass)
-  #   runTestEqual(inc(runNum),"out_Catch",     "Compare baseline AB to Current RK4 for OutCatch",      REcosystem_Baseline_AB_OutCatch,     REcosystem_Current_RK4_OutCatch)
-  #   runTestEqual(inc(runNum),"out_Gear_Catch","Compare baseline AB to Current RK4 for OutGearCatch",  REcosystem_Baseline_AB_OutGearCatch, REcosystem_Current_RK4_OutGearCatch)
-  # }
+  if (! CREATE_BASELINE_FILES) {
+    # Remove existing output data files
+    cwd <- getwd()
+    files <- dir(path=file.path(cwd,OUTPUT_DATA_DIR),pattern='diff_*')
+    file.remove(file.path(OUTPUT_DATA_DIR,files))
+    files <- dir(path=file.path(cwd,OUTPUT_DATA_DIR),pattern='zero_*')
+    file.remove(file.path(OUTPUT_DATA_DIR,files))
+
+    # Test 1 - Test if Balanced (i.e., "Status: Balanced" is the 2nd line of the Summary file)
+    headerSummaryLines <- readLines(CurrentRpathObjSummary,n=2)
+    parts <- unlist(strsplit(str_trim(headerSummaryLines[2]),split=" "))
+    runTestEqual(inc(runNum),"","Is model balanced?",parts[2],"Balanced")
+
+    # Test 2 - Test if function runs silently (i.e., no messages, warnings, or print statements)
+    runTestSilent(inc(runNum),"Does model run without any terminal output (i.e., warnings, errors)?",REco.params,'R Ecosystem')
+
+    # Test 3 - Test that the REcosystem object is the same as the saved original REcosystem object
+    REcosystemCurrent <- readRDS(CurrentRpathObjTopLevel)#,fill = TRUE, sep = " ")
+    runTestEqual(inc(runNum),"","Is the baseline Rpath object equivalent to the current Rpath object (toplevel data)?",REcosystemBaseline,REcosystemCurrent)
+
+    # Test 4 - Test that the REcosystem Summary is the same as the saved original REcosystem Summary
+    REcosystemSummaryCurrent <- read.table(CurrentRpathObjSummary,fill = TRUE)
+    runTestEqual(inc(runNum),"","Is the baseline Rpath run Summary the same as the current Rpath Summary?",REcosystemBaselineSummary,REcosystemSummaryCurrent)
+
+    # Tests 5-16 - Test that REcosystem AB object is same as RK4 object with no perturbations
+    REcosystem_Current_AB  <- read.csv(CurrentAB)
+    REcosystem_Current_RK4 <- read.csv(CurrentRK4)
+  }
+
+  if (CREATE_BASELINE_FILES) {
+    saveRDS(REcosystem_Current_AB_from_Sim$out_Biomass,    file=BaselineABOutBiomass)
+    saveRDS(REcosystem_Current_RK4_from_Sim$out_Biomass,   file=BaselineRK4OutBiomass)
+    saveRDS(REcosystem_Current_AB_from_Sim$out_Catch,      file=BaselineABOutCatch)
+    saveRDS(REcosystem_Current_RK4_from_Sim$out_Catch,     file=BaselineRK4OutCatch)
+    saveRDS(REcosystem_Current_AB_from_Sim$out_Gear_Catch, file=BaselineABOutGearCatch)
+    saveRDS(REcosystem_Current_RK4_from_Sim$out_Gear_Catch,file=BaselineRK4OutGearCatch)
+  }
+  else {
+    saveRDS(REcosystem_Current_AB_from_Sim$out_Biomass,    file=CurrentABOutBiomass)
+    saveRDS(REcosystem_Current_RK4_from_Sim$out_Biomass,   file=CurrentRK4OutBiomass)
+    saveRDS(REcosystem_Current_AB_from_Sim$out_Catch,      file=CurrentABOutCatch)
+    saveRDS(REcosystem_Current_RK4_from_Sim$out_Catch,     file=CurrentRK4OutCatch)
+    saveRDS(REcosystem_Current_AB_from_Sim$out_Gear_Catch, file=CurrentABOutGearCatch)
+    saveRDS(REcosystem_Current_RK4_from_Sim$out_Gear_Catch,file=CurrentRK4OutGearCatch)
+    REcosystem_Current_AB_OutBiomass    <- readRDS(CurrentABOutBiomass) #,   fill=TRUE,sep=" ")
+    REcosystem_Current_RK4_OutBiomass   <- readRDS(CurrentRK4OutBiomass) #,  fill=TRUE,sep=" ")
+    REcosystem_Current_AB_OutCatch      <- readRDS(CurrentABOutCatch) #,     fill=TRUE,sep=" ")
+    REcosystem_Current_RK4_OutCatch     <- readRDS(CurrentRK4OutCatch) #,    fill=TRUE,sep=" ")
+    REcosystem_Current_AB_OutGearCatch  <- readRDS(CurrentABOutGearCatch) #, fill=TRUE,sep=" ")
+    REcosystem_Current_RK4_OutGearCatch <- readRDS(CurrentRK4OutGearCatch) #,fill=TRUE,sep=" ")
+    runTestEqual(inc(runNum),"",              "Compare baseline AB to Current AB",                    REcosystem_Baseline_AB,              REcosystem_Current_AB)
+    runTestEqual(inc(runNum),"out_Biomass",   "Compare baseline AB to Current AB for OutBiomass",     REcosystem_Baseline_AB_OutBiomass,   REcosystem_Current_AB_OutBiomass)
+    runTestEqual(inc(runNum),"out_Catch",     "Compare baseline AB to Current AB for OutCatch",       REcosystem_Baseline_AB_OutCatch,     REcosystem_Current_AB_OutCatch)
+    runTestEqual(inc(runNum),"out_Gear_Catch","Compare baseline AB to Current AB for OutGearCatch",   REcosystem_Baseline_AB_OutGearCatch, REcosystem_Current_AB_OutGearCatch)
+    runTestEqual(inc(runNum),"",              "Compare baseline RK4 to Current RK4",                  REcosystem_Baseline_RK4,             REcosystem_Current_RK4)
+    runTestEqual(inc(runNum),"out_Biomass",   "Compare baseline RK4 to Current RK4 for OutputBiomass",REcosystem_Baseline_RK4_OutBiomass,  REcosystem_Current_RK4_OutBiomass)
+    runTestEqual(inc(runNum),"out_Catch",     "Compare baseline RK4 to Current RK4 for OutCatch",     REcosystem_Baseline_RK4_OutCatch,    REcosystem_Current_RK4_OutCatch)
+    runTestEqual(inc(runNum),"out_Gear_Catch","Compare baseline RK4 to Current RK4 for OutGearCatch", REcosystem_Baseline_RK4_OutGearCatch,REcosystem_Current_RK4_OutGearCatch)
+    runTestEqual(inc(runNum),"",              "Compare baseline AB to Current RK4",                   REcosystem_Baseline_AB,              REcosystem_Current_RK4)
+    runTestEqual(inc(runNum),"out_Biomass",   "Compare baseline AB to Current RK4 for OutBiomass",    REcosystem_Baseline_AB_OutBiomass,   REcosystem_Current_RK4_OutBiomass)
+    runTestEqual(inc(runNum),"out_Catch",     "Compare baseline AB to Current RK4 for OutCatch",      REcosystem_Baseline_AB_OutCatch,     REcosystem_Current_RK4_OutCatch)
+    runTestEqual(inc(runNum),"out_Gear_Catch","Compare baseline AB to Current RK4 for OutGearCatch",  REcosystem_Baseline_AB_OutGearCatch, REcosystem_Current_RK4_OutGearCatch)
+  }
   
   print("------------------ Forced Biomass Tests (Jitter) ------------------")
   setwd(originalWorkingDir)
@@ -1034,42 +1034,42 @@ print(paste0("SUM $ForcedBio: ", sum(REcosystem_scene_jitter$forcing$ForcedBio))
 # print(paste0("tot speciesBiomass: ",totSpeciesBiomass))
 # print(paste0("tot rand val: ",totRandVal))
     }
-    # else if (theTypeData == 'Forced Migrate') {
-    #   BaselineJitterDataFrames <- list(REcosystem_Baseline_AB_ForcedMig_OutBiomass_Jitter,  REcosystem_Baseline_AB_ForcedMig_OutCatch_Jitter,  REcosystem_Baseline_AB_ForcedMig_OutGearCatch_Jitter,
-    #                                    REcosystem_Baseline_RK4_ForcedMig_OutBiomass_Jitter, REcosystem_Baseline_RK4_ForcedMig_OutCatch_Jitter, REcosystem_Baseline_RK4_ForcedMig_OutGearCatch_Jitter)
-    #   BaselineJitterFilenames  <- list(BaselineABForcedMigOutBiomassJitter,  BaselineABForcedMigOutCatchJitter,  BaselineABForcedMigOutGearCatchJitter,
-    #                                    BaselineRK4ForcedMigOutBiomassJitter, BaselineRK4ForcedMigOutCatchJitter, BaselineRK4ForcedMigOutGearCatchJitter)
-    #   CurrentJitterFilenames   <- list(CurrentABForcedMigOutBiomassJitter,  CurrentABForcedMigOutCatchJitter,  CurrentABForcedMigOutGearCatchJitter,
-    #                                    CurrentRK4ForcedMigOutBiomassJitter, CurrentRK4ForcedMigOutCatchJitter, CurrentRK4ForcedMigOutGearCatchJitter)
-    #   modifiedMigrate <- modifyForcingMatrix(modNum,species,'Jittered',theTypeData, REcosystem_scene_jitter$forcing$ForcedMigrate, REcosystem_scene_jitter)
-    #   REcosystem_scene_jitter$forcing$ForcedMigrate <- modifiedMigrate
-    # } else {
-    #   print(paste0("Error: Unknown data type: ",theTypeData))
-    #   return()
-    # }
-    
-    # REcosystem_AB_Current_Jitter  <- rsim.run(REcosystem_scene_jitter,method='AB', years=1:50)
+    else if (theTypeData == 'Forced Migrate') {
+      BaselineJitterDataFrames <- list(REcosystem_Baseline_AB_ForcedMig_OutBiomass_Jitter,  REcosystem_Baseline_AB_ForcedMig_OutCatch_Jitter,  REcosystem_Baseline_AB_ForcedMig_OutGearCatch_Jitter,
+                                       REcosystem_Baseline_RK4_ForcedMig_OutBiomass_Jitter, REcosystem_Baseline_RK4_ForcedMig_OutCatch_Jitter, REcosystem_Baseline_RK4_ForcedMig_OutGearCatch_Jitter)
+      BaselineJitterFilenames  <- list(BaselineABForcedMigOutBiomassJitter,  BaselineABForcedMigOutCatchJitter,  BaselineABForcedMigOutGearCatchJitter,
+                                       BaselineRK4ForcedMigOutBiomassJitter, BaselineRK4ForcedMigOutCatchJitter, BaselineRK4ForcedMigOutGearCatchJitter)
+      CurrentJitterFilenames   <- list(CurrentABForcedMigOutBiomassJitter,  CurrentABForcedMigOutCatchJitter,  CurrentABForcedMigOutGearCatchJitter,
+                                       CurrentRK4ForcedMigOutBiomassJitter, CurrentRK4ForcedMigOutCatchJitter, CurrentRK4ForcedMigOutGearCatchJitter)
+      modifiedMigrate <- modifyForcingMatrix(modNum,species,'Jittered',theTypeData, REcosystem_scene_jitter$forcing$ForcedMigrate, REcosystem_scene_jitter)
+      REcosystem_scene_jitter$forcing$ForcedMigrate <- modifiedMigrate
+    } else {
+      print(paste0("Error: Unknown data type: ",theTypeData))
+      return()
+    }
+
+     REcosystem_AB_Current_Jitter  <- rsim.run(REcosystem_scene_jitter,method='AB', years=1:50)
     REcosystem_RK4_Current_Jitter <- rsim.run(REcosystem_scene_jitter,method='RK4',years=1:50)
     if (CREATE_BASELINE_FILES) {
-      # saveRDS(REcosystem_AB_Current_Jitter$out_Biomass,     file=BaselineJitterFilenames[[1]])
-      # saveRDS(REcosystem_AB_Current_Jitter$out_Catch,       file=BaselineJitterFilenames[[2]])
-      # saveRDS(REcosystem_AB_Current_Jitter$out_Gear_Catch,  file=BaselineJitterFilenames[[3]])
+      saveRDS(REcosystem_AB_Current_Jitter$out_Biomass,     file=BaselineJitterFilenames[[1]])
+      saveRDS(REcosystem_AB_Current_Jitter$out_Catch,       file=BaselineJitterFilenames[[2]])
+      saveRDS(REcosystem_AB_Current_Jitter$out_Gear_Catch,  file=BaselineJitterFilenames[[3]])
       saveRDS(REcosystem_RK4_Current_Jitter$out_Biomass,    file=BaselineJitterFilenames[[4]])
       saveRDS(REcosystem_RK4_Current_Jitter$out_Catch,      file=BaselineJitterFilenames[[5]])
       saveRDS(REcosystem_RK4_Current_Jitter$out_Gear_Catch, file=BaselineJitterFilenames[[6]])
     } else {
-      # saveRDS(REcosystem_AB_Current_Jitter$out_Biomass,     file=CurrentJitterFilenames[[1]])
-      # saveRDS(REcosystem_AB_Current_Jitter$out_Catch,       file=CurrentJitterFilenames[[2]])
-      # saveRDS(REcosystem_AB_Current_Jitter$out_Gear_Catch,  file=CurrentJitterFilenames[[3]])
+       saveRDS(REcosystem_AB_Current_Jitter$out_Biomass,     file=CurrentJitterFilenames[[1]])
+       saveRDS(REcosystem_AB_Current_Jitter$out_Catch,       file=CurrentJitterFilenames[[2]])
+       saveRDS(REcosystem_AB_Current_Jitter$out_Gear_Catch,  file=CurrentJitterFilenames[[3]])
       saveRDS(REcosystem_RK4_Current_Jitter$out_Biomass,    file=CurrentJitterFilenames[[4]])
       saveRDS(REcosystem_RK4_Current_Jitter$out_Catch,      file=CurrentJitterFilenames[[5]])
-      # saveRDS(REcosystem_RK4_Current_Jitter$out_Gear_Catch, file=CurrentJitterFilenames[[6]])
-      # runTestRDS(inc(runNum),"out_Biomass",    theTypeData, "Random", "AB",  "AB",  BaselineJitterDataFrames[[1]], CurrentJitterFilenames[[1]], species)
-      # runTestRDS(inc(runNum),"out_Catch",      theTypeData, "Random", "AB",  "AB",  BaselineJitterDataFrames[[2]], CurrentJitterFilenames[[2]], species)
-      # runTestRDS(inc(runNum),"out_Gear_Catch", theTypeData, "Random", "AB",  "AB",  BaselineJitterDataFrames[[3]], CurrentJitterFilenames[[3]], species)
+       saveRDS(REcosystem_RK4_Current_Jitter$out_Gear_Catch, file=CurrentJitterFilenames[[6]])
+       runTestRDS(inc(runNum),"out_Biomass",    theTypeData, "Random", "AB",  "AB",  BaselineJitterDataFrames[[1]], CurrentJitterFilenames[[1]], species)
+       runTestRDS(inc(runNum),"out_Catch",      theTypeData, "Random", "AB",  "AB",  BaselineJitterDataFrames[[2]], CurrentJitterFilenames[[2]], species)
+       runTestRDS(inc(runNum),"out_Gear_Catch", theTypeData, "Random", "AB",  "AB",  BaselineJitterDataFrames[[3]], CurrentJitterFilenames[[3]], species)
       runTestRDS(inc(runNum),"out_Biomass",    theTypeData, "Random", "RK4", "RK4", BaselineJitterDataFrames[[4]], CurrentJitterFilenames[[4]], species)
       runTestRDS(inc(runNum),"out_Catch",      theTypeData, "Random", "RK4", "RK4", BaselineJitterDataFrames[[5]], CurrentJitterFilenames[[5]], species)
-      # runTestRDS(inc(runNum),"out_Gear_Catch", theTypeData, "Random", "RK4", "RK4", BaselineJitterDataFrames[[6]], CurrentJitterFilenames[[6]], species)
+       runTestRDS(inc(runNum),"out_Gear_Catch", theTypeData, "Random", "RK4", "RK4", BaselineJitterDataFrames[[6]], CurrentJitterFilenames[[6]], species)
     }
 return()
   }
