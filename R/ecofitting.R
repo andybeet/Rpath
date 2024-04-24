@@ -6,9 +6,16 @@ read.fitting.biomass <- function(SCENE, filename){
 # Base variables
   SIM   <- SCENE
   years <- as.numeric(row.names(SCENE$fishing$ForcedFRate))
+  species <- SIM$params$spname
 
   cdat  <-read.csv(filename)
-  c0dat <-cdat[!is.na(cdat$Value)& cdat$Year %in% years ,]
+  missing_sp <- unique(cdat$Group[which(!(cdat$Group %in% species))])
+  if(length(missing_sp)>0){
+    print("Warning, following species in fit data not matched, dropped:",missing)
+  }
+  
+  cmdat <- cdat[cdat$Group %in% species,]
+  c0dat <- cmdat[!is.na(cmdat$Value)& cmdat$Year %in% years ,]
   ccdat <- c0dat[c0dat$Value>0 & c0dat$Stdev>0 ,]
   
   #type <- as.character(rep("absolute",length(ccdat$YEAR)))
