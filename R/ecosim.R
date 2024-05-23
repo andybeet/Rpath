@@ -59,6 +59,14 @@ rsim.scenario <- function(Rpath, Rpath.params, years = 1:100){
   return(rsim)   
 }
 
+#
+# Test function
+#
+rsim.check <- function(Rsim.scenario) {
+  scene <- copy(Rsim.scenario) 
+  scene.years <- list(1900:2000)
+  return (scene.years)
+}
 #'Run Rsim
 #'
 #'Carries out the numerical integration of the Rsim alogrithms. 
@@ -78,6 +86,11 @@ rsim.scenario <- function(Rpath, Rpath.params, years = 1:100){
 rsim.run <- function(Rsim.scenario, method = 'RK4', years = 1:100){
   scene <- copy(Rsim.scenario) 
 
+  # Perform argument checks: Check method name and figure out starting and ending years for run
+    if (method != 'RK4' && method != 'AB') {
+      stop("Invalid method name for solving nonlinear equations")
+    }
+    
   # Figure out starting and ending years for run
   # KYA 4/23/18 single year (e.g. 1971:1971) reduces to a scalar so take out length trap
     #if (length(years)<2){stop("Years should be a vector of year labels")}
@@ -95,8 +108,7 @@ rsim.run <- function(Rsim.scenario, method = 'RK4', years = 1:100){
     rout <- rk4_run(scene$params,  scene$start_state, 
                     scene$forcing, scene$fishing,
                     scene$stanzas, syear, eyear)
-  }
-  if(method == 'AB'){
+  } else if(method == 'AB'){
     #Run initial derivative
     derv <- deriv_vector(scene$params, scene$start_state, 
                          scene$forcing, scene$fishing, 

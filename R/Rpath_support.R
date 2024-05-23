@@ -1,12 +1,18 @@
+library(methods)
+ 
 ########################################################################################
 # Set of functions for returning functional group names (character vector)
 # using the type input column
 #
 # Internal supporting function for group names to check type 
-gtype <- function(Rpath){
-  if(class(Rpath)=="Rpath"){gt<-list(type=Rpath$type, grp=Rpath$Group)}
-  else{
-    if(class(Rpath)=="Rpath.params"){
+#'
+#' @importFrom methods is
+#'
+grouptype <- function(Rpath) {
+  if (is(Rpath,"Rpath")) {
+    gt<-list(type=Rpath$type, grp=Rpath$Group)
+  } else {
+    if (is(Rpath,"Rpath.params")) {
       gt<-list(type=Rpath$model$Type, grp=Rpath$model$Group)}
     else{
       stop("Input must be an Rpath (balanced) or Rpath.params (unbalanced) object.")
@@ -34,31 +40,52 @@ gtype <- function(Rpath){
 #'by category (group type).
 #'
 #'@export
-rpath.groups     <- function(Rpath){gt<-gtype(Rpath); return(gt$grp) }
+rpath.groups <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp)
+}
 
 #'@rdname rpath.groups
 #'@export
-rpath.living     <- function(Rpath){gt<-gtype(Rpath); return(gt$grp[gt$type<2]) }
+rpath.living <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp[gt$type<2])
+}
 
 #'@rdname rpath.groups
 #'@export 
-rpath.detrital   <- function(Rpath){gt<-gtype(Rpath); return(gt$grp[gt$type==2])}
+rpath.detrital <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp[gt$type==2])
+}
 
 #'@rdname rpath.groups
 #'@export 
-rpath.gears      <- function(Rpath){gt<-gtype(Rpath); return(gt$grp[gt$type==3])}
+rpath.gears     <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp[gt$type==3])
+}
 
 #'@rdname rpath.groups
 #'@export 
-rpath.producers  <- function(Rpath){gt<-gtype(Rpath); return(gt$grp[gt$type==1]) }
+rpath.producers <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp[gt$type==1])
+}
 
 #'@rdname rpath.groups
 #'@export 
-rpath.consumers  <- function(Rpath){gt<-gtype(Rpath); return(gt$grp[gt$type==0])}
+rpath.consumers <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp[gt$type==0])
+}
 
 #'@rdname rpath.groups
 #'@export 
-rpath.mixotrophs <- function(Rpath){gt<-gtype(Rpath); return(gt$grp[gt$type>0 & gt$type<0])}
+rpath.mixotrophs <- function(Rpath){
+  gt <- grouptype(Rpath)
+  return(gt$grp[gt$type>0 & gt$type<0])
+}
 
 #################################################################################
 #' Extract start and end states from an rsim run output.
