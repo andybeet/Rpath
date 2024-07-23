@@ -11,7 +11,7 @@ read.fitting.biomass <- function(SCENE, filename){
   cdat  <-read.csv(filename)
   missing_sp <- unique(cdat$Group[which(!(cdat$Group %in% species))])
   if(length(missing_sp)>0){
-    print("Warning, following species in fit data not matched, dropped:",missing)
+    warning("Following species in BIOMASS fit data not in model, dropped: ",missing_sp)
   }
   
   cmdat <- cdat[cdat$Group %in% species,]
@@ -40,7 +40,13 @@ read.fitting.catch <- function(SCENE, filename){
   # Columns needed
   #  Group	Year	Value	SD	Scale   
   cdat  <- read.csv(filename)
-  ccdat <- cdat[!is.na(cdat$Value) & cdat$Year %in% years,] 
+  missing_sp <- unique(cdat$Group[which(!(cdat$Group %in% SIM$params$spname))])
+  if(length(missing_sp)>0){
+    warning("Following species in CATCH fit data not in model, dropped: ",missing_sp)
+  }
+  
+  cmdat <- cdat[cdat$Group %in% SIM$params$spname,]
+  ccdat <- cmdat[!is.na(cmdat$Value) & cmdat$Year %in% years,] 
   ccdat$Year  <- as.character(ccdat$Year)
   ccdat$Group <- as.character(ccdat$Group) 
   obs  <- as.numeric(ccdat$Value) * as.numeric(ccdat$Scale)   
