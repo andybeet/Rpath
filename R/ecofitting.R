@@ -3,6 +3,8 @@
 #'@export
 read.fitting.biomass <- function(SCENE, filename){
 
+# TODO KYA 7/24/24: add intelligent warning if missing column (e.g. Type)
+
 # Base variables
   SIM   <- SCENE
   years <- as.numeric(row.names(SCENE$fishing$ForcedFRate))
@@ -35,6 +37,9 @@ return(SIM)
 ################################################################################
 #'@export
 read.fitting.catch <- function(SCENE, filename){
+  
+  # TODO KYA 7/24/24: add intelligent warning if missing column 
+  
   SIM   <- SCENE
   years <- as.numeric(row.names(SCENE$fishing$ForcedFRate))
   # Columns needed
