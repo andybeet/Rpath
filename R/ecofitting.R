@@ -28,8 +28,8 @@ read.fitting.biomass <- function(SCENE, filename){
   sd   <- ifelse(as.numeric(ccdat$Scale)<0, as.numeric(ccdat$Stdev),
                  as.numeric(ccdat$Stdev) * as.numeric(ccdat$Scale))   
   wt   <- rep(1,length(obs))
-  
-  SIM$fitting$Biomass <- cbind(ccdat,obs,sd,wt)
+  initial_q   <- rep(1,length(obs))
+  SIM$fitting$Biomass <- cbind(ccdat,obs,sd,initial_q,wt)
 
 return(SIM)
 }
@@ -124,7 +124,8 @@ rsim.fit.obj <- function(SIM,RES,verbose=TRUE){
                                    ncol=2)] + epsilon
   obs <- SIM$fitting$Biomass$obs + epsilon
   sd  <- SIM$fitting$Biomass$sd  + epsilon
-  wt  <- SIM$fitting$Biomass$wt 
+  wt  <- SIM$fitting$Biomass$wt
+  initial_q <- SIM$fitting$Biomass$initial_q
   # We need to get variance-weighted survey means by species, for
   # calculating mean values needed for setting best-fit q
   
@@ -136,8 +137,8 @@ rsim.fit.obj <- function(SIM,RES,verbose=TRUE){
   wt_logdiffsum <- tapply(logdiff*wt_sd_inverse, as.character(SIM$fitting$Biomass$Group),sum)
   wt_sum        <- tapply(wt_sd_inverse,         as.character(SIM$fitting$Biomass$Group),sum)
   q_est         <- exp(wt_logdiffsum/wt_sum) # need ifelse here for 0 weights?
-  survey_q      <- ifelse(SIM$fitting$Biomass$Type=="absolute", 1.0,
-                          q_est[as.character(SIM$fitting$Biomass$Group)])
+  survey_q      <- ifelse(SIM$fitting$Biomass$Type=="index", 
+                     q_est[as.character(SIM$fitting$Biomass$Group)], initial_q)
   ## Jan 2023 incorrect code
    #inv_var <- 1.0/(sd*sd)
    #obs_sum <- tapply(obs*inv_var*wt, as.character(SIM$fitting$Biomass$Group),sum)
