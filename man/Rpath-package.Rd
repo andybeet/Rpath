@@ -20,8 +20,7 @@ or ecotrophic efficiency.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://andybeet.github.io/Rpath/}
-  \item Report bugs at \url{https://github.com/NOAA-EDAB/Rpath/issues}
+  \item \url{https://andybeet.github.io/Rpath/,https://github.com/andybeet/Rpath/}
 }
 
 }
