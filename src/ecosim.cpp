@@ -428,6 +428,7 @@ int y, m, dd;
    List outdat = List::create(
      _["out_Biomass"]=out_Biomass,
      _["out_Catch"]=out_Catch,
+     _["out_SSB"]=out_SSB,
      _["out_Gear_Catch"]=out_Gear_Catch,
      _["annual_Catch"]=annual_Catch,
      _["annual_Biomass"]=annual_Biomass,
